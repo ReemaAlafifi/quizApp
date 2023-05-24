@@ -1,0 +1,137 @@
+import 'package:flutter/material.dart';
+
+import 'package:quiz_app/models/question.dart';
+class QuestionCard extends StatelessWidget {
+  const QuestionCard({
+    super.key,
+    required this.question,
+    required this.deleteQuestion,
+  });
+
+  final Question question;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(25),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Question
+              Expanded(
+                child: Text(
+                  question.question,
+                ),
+              ),
+
+              // delete Button
+              IconButton(
+                onPressed: () => showDeleteDialog(context),
+                icon: const Icon(Icons.delete),
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          AnswerCard(
+            correct: question.option1 == question.answer,
+            text: question.option1,
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          AnswerCard(
+            correct: question.option2 == question.answer,
+            text: question.option2,
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          AnswerCard(
+            correct: question.option3 == question.answer,
+            text: question.option3,
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          AnswerCard(
+            correct: question.option4 == question.answer,
+            text: question.option4,
+          ),
+        ],
+      ),
+    );
+  }
+
+  final Function(Question question, BuildContext context) deleteQuestion;
+
+  void showDeleteDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Delete question',
+          ),
+          content: Text(
+            'Are you sure you want to delete this question?',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Delete'),
+              onPressed: () => deleteQuestion(question, context),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class AnswerCard extends StatelessWidget {
+  const AnswerCard({
+    super.key,
+    required this.correct,
+    required this.text,
+  });
+
+  final bool correct;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.centerLeft,
+      constraints: const BoxConstraints(minHeight: 50),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 15,
+        vertical: 5,
+      ),
+      decoration: BoxDecoration(
+        color: correct ? Colors.green : Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              color: correct ? Colors.white : null,
+            ),
+      ),
+    );
+  }
+}
